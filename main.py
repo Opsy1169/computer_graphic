@@ -30,13 +30,23 @@ def main():
     win.close()
 
 
-def lineDotByDot(x0, y0, x1, y1, win, color):
+def lineDotByDotFirst(x0, y0, x1, y1, win, color):
     step = 0.01
     arr = np.arange(0, 1, 0.01)
     for i in arr:
-        point = Point((x0*(1-i) + i*x1), (y0*(1-i) + i*y1));
+        point = Point((x0*(1-i) + i*x1), (y0*(1-i) + i*y1))
+        point.setFill(color)
         point.draw(win)
 
+
+def lineDotByDotSecond(x0, y0, x1, y1, win, color):
+    step = 0.01
+    arr = np.arange(x0, x1, 1)
+    for i in arr:
+        t = (i-x0)/(x1-x0)
+        point = Point(i, (y0*(1-t) + t*y1))
+        point.setFill(color)
+        point.draw(win)
 
 def embeddedLine():
     win = GraphWin('Line', 200, 200)
@@ -52,11 +62,12 @@ def embeddedLine():
     win.getMouse()
     win.close()
 
-def preparation():
-    win = GraphWin('Line', 400, 400)
+def preparation(width):
+    win = GraphWin('Line', width, width)
     win.setBackground("white")
+    center = width/2
     #lineDotByDot(100, 100, 150, 150, win, "green")
-    star(200, 200, 6, 150, win)
+    star(center, center, 10, center, win)
 
 def star(x0, y0, rayNumber, radius, win):
     start = 1.57
@@ -64,11 +75,11 @@ def star(x0, y0, rayNumber, radius, win):
     print(arr)
     for i in arr:
         #print(x0 + "; " + y0 + "   " + )
-        lineDotByDot(x0, y0, (radius*np.cos(i))+x0, (radius*np.sin(i))+y0, win, "black")
+        lineDotByDotSecond(x0, y0, (radius*np.cos(i))+x0, (radius*np.sin(i))+y0, win, "red")
 
     win.getMouse()
     win.close()
 
 
-preparation()
+preparation(1000)
 #embeddedLine()
