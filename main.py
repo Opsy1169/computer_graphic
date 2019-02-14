@@ -1,4 +1,5 @@
 from graphics import *
+import numpy as np
 
 
 def main():
@@ -29,10 +30,11 @@ def main():
     win.close()
 
 
-def lineDotByDot():
-    win = GraphWin('Line', 200, 200)
-    for i in range(0, 200):
-        point = Point(100, i)
+def lineDotByDot(x0, y0, x1, y1, win, color):
+    step = 0.01
+    arr = np.arange(0, 1, 0.1)
+    for i in arr:
+        point = Point((x0*(1-i) + i*x1), (x0*(1-i) + i*y1));
         point.draw(win)
     win.getMouse()
     win.close()
@@ -43,9 +45,18 @@ def embeddedLine():
     rect = Rectangle(Point(0, 0), Point(199, 199))
     rect.setFill("white")
     rect.draw(win)
-    line = Line(Point(10, 10), Point(190, 11))
+    line = Point(4, 10.9)
+    line.setFill("red")
+    line.draw(win)
+    line = Line(Point(9.9, 10), Point(190, 11.9))
     line.draw(win)
     win.getMouse()
     win.close()
 
-embeddedLine()
+def preparation():
+    win = GraphWin('Line', 200, 200)
+    win.setBackground("white")
+    lineDotByDot(100, 100, 150, 150, win, "green")
+
+preparation()
+#embeddedLine()
