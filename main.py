@@ -47,6 +47,46 @@ def lineDotByDotSecond(x0, y0, x1, y1, win, color):
         point = Point(i, (y0*(1-t) + t*y1))
         point.setFill(color)
         point.draw(win)
+def swap(x,y):
+    c = x
+    x = y
+    y = c
+    return x,y
+
+def lineDotByDotfour(x0, y0, x1, y1, win, color):
+    steeps = False
+    if np.abs(x0 - x1)<np.abs(y0-y1):
+        x0,y0 = swap(x0,y0)
+        x1,y1 = swap(x1,y1)
+        steeps=True
+    if (x0>x1):
+        x0, x1 = swap(x0, x1)
+        y0, y1 = swap(y0, y1)
+
+    step = 0.01
+    dx = x1-x0
+    dy = y1-y0
+    derror = np.abs(dy/dx)
+    error = 0
+    y=y0
+    arr = np.arange(x0, x1, 1)
+    for i in arr:
+        if steeps:
+            point = Point(i,y)
+            point.setFill(color)
+            point.draw(win)
+        else:
+            point = Point(y, i)
+            point.setFill(color)
+            point.draw(win)
+        error+=derror
+        if (error>0.5):
+            if y1>y0:
+                y+=1
+            else :
+                y+=-1
+            error -= 1
+
 
 def embeddedLine():
     win = GraphWin('Line', 200, 200)
@@ -67,15 +107,14 @@ def preparation(width):
     win.setBackground("white")
     center = width/2
     #lineDotByDot(100, 100, 150, 150, win, "green")
-    star(center, center, 10, center, win)
+    star(center, center, 20, center, win)
 
 def star(x0, y0, rayNumber, radius, win):
-    start = 1.57
-    arr = np.arange(-1.57, 1.58, 3.14/rayNumber)
+    start = np.pi
+    arr = np.arange(-np.pi, np.pi+0.01, np.pi/rayNumber)
     print(arr)
     for i in arr:
-        #print(x0 + "; " + y0 + "   " + )
-        lineDotByDotSecond(x0, y0, (radius*np.cos(i))+x0, (radius*np.sin(i))+y0, win, "red")
+        lineDotByDotfour(x0, y0, (radius*np.cos(i))+x0, (radius*np.sin(i))+y0, win, "red")
 
     win.getMouse()
     win.close()
