@@ -63,7 +63,6 @@ def lineDotByDotfour(x0, y0, x1, y1, win, color):
         x0, x1 = swap(x0, x1)
         y0, y1 = swap(y0, y1)
 
-    step = 0.01
     dx = x1-x0
     dy = y1-y0
     derror = np.abs(dy/dx)
