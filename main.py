@@ -87,6 +87,7 @@ def lineDotByDotfour(x0, y0, x1, y1, win, color):
             error -= 1
 
 
+
 def embeddedLine():
     win = GraphWin('Line', 200, 200)
 
