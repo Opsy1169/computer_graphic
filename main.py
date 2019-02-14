@@ -1,6 +1,6 @@
 from graphics import *
 import numpy as np
-import parser as pr
+from parser_my import getPointDraw
 
 def main():
     win = GraphWin('Face', 200, 150) # give title and dimensions
@@ -189,7 +189,8 @@ if __name__ == '__main__':
 
     win = GraphWin('Line', 700, 700)
     win.setBackground("black")
-    x, y = pr.getPointDraw('x', 'y')
+
+    x, y = getPointDraw('x', 'y')
 
     drawPoint(x, y, win, "green")
     win.getMouse()
