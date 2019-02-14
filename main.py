@@ -1,6 +1,6 @@
 from graphics import *
 import numpy as np
-
+import parser as pr
 
 def main():
     win = GraphWin('Face', 200, 150) # give title and dimensions
@@ -47,6 +47,7 @@ def lineDotByDotSecond(x0, y0, x1, y1, win, color):
         point = Point(i, (y0*(1-t) + t*y1))
         point.setFill(color)
         point.draw(win)
+
 def swap(x,y):
     c = x
     x = y
@@ -154,6 +155,7 @@ def embeddedLine():
     win.getMouse()
     win.close()
 
+
 def preparation(width):
     win = GraphWin('Line', width, width)
     win.setBackground("black")
@@ -172,5 +174,23 @@ def star(x0, y0, rayNumber, radius, win):
     win.close()
 
 
-preparation(1000)
+#preparation(1000)
 #embeddedLine()
+
+
+def drawPoint(x, y, win, color):
+    for i in range(len(x)):
+        point = Point(256*x[i]+350, -256*y[i]+350)
+        point.setFill(color)
+        point.draw(win)
+
+
+if __name__ == '__main__':
+
+    win = GraphWin('Line', 700, 700)
+    win.setBackground("black")
+    x, y = pr.getPointDraw('x', 'y')
+
+    drawPoint(x, y, win, "green")
+    win.getMouse()
+    win.close()
