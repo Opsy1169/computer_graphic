@@ -115,7 +115,7 @@ def lineDotByDotBy(x0, y0, x1, y1, win, color):
 
     arr = np.arange(x0, x1, 1)
     for i in arr:
-        if steeps:
+        if not steeps:
             point = Point(i,y)
             point.setFill(color_rgb(int(255*(1-error)),0,0))
             point.draw(win)
