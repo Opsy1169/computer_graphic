@@ -72,11 +72,11 @@ def lineDotByDotfour(x0, y0, x1, y1, win, color):
     arr = np.arange(x0, x1, 1)
     for i in arr:
         if steeps:
-            point = Point(i,y)
+            point = Point(y,i)
             point.setFill(color)
             point.draw(win)
         else:
-            point = Point(y, i)
+            point = Point(i, y)
             point.setFill(color)
             point.draw(win)
         error+=derror
@@ -105,7 +105,6 @@ def lineDotByDotBy(x0, y0, x1, y1, win, color):
     dx = x1-x0
     dy = y1-y0
     derror = np.abs(dy/dx)
-    print("derror ", derror)
     error = 0
     y=y0
     sy = 0
@@ -119,20 +118,16 @@ def lineDotByDotBy(x0, y0, x1, y1, win, color):
         if steeps:
             point = Point(i,y)
             point.setFill(color_rgb(int(255*(1-error)),0,0))
-            print(int(255*(1-error)))
             point.draw(win)
             point = Point(i, y+sy)
             point.setFill(color_rgb(int(255*(error)),0,0))
-            print(int(255 * (error)))
             point.draw(win)
         else:
             point = Point(y, i)
             point.setFill(color_rgb(int(255*(1-error)),0,0))
-            print(int(255 * (1 - error)))
             point.draw(win)
             point = Point(y + sy,i)
             point.setFill(color_rgb(int(255*(error)),0,0))
-            print(int(255 * (error)))
             point.draw(win)
         error+=derror
         if (error>1):
@@ -179,19 +174,35 @@ def star(x0, y0, rayNumber, radius, win):
 
 
 def drawPoint(x, y, win, color):
+    width = win.width
+    center = width / 2
     for i in range(len(x)):
-        point = Point(256*x[i]+350, -256*y[i]+350)
+        point = Point(300*x[i]+center, -300*y[i]+center)
         point.setFill(color)
         point.draw(win)
+
+def drawEdges(x, y, edges, win, color):
+    for i in range(len(edges)):
+        triangle = edges[i]
+        width = win.width
+        center = width/2
+        point1 = Point(-310*x[int(triangle.first)-1]+center, -310*y[int(triangle.first)-1]+center)
+        point2 = Point(-310*x[int(triangle.second) - 1]+center, -310*y[int(triangle.second) - 1]+center)
+        point3 = Point(-310*x[int(triangle.third) - 1]+center, -310*y[int(triangle.third) - 1]+center)
+        print(point1)
+        lineDotByDotfour(point1.x, point1.y, point2.x, point2.y, win, color)
+        lineDotByDotfour(point2.x, point2.y, point3.x, point3.y, win, color)
+        lineDotByDotfour(point3.x, point3.y, point1.x, point1.y, win, color)
 
 
 if __name__ == '__main__':
 
-    win = GraphWin('Line', 700, 700)
+    win = GraphWin('Line', 1000, 1000)
     win.setBackground("black")
 
-    x, y = getPointDraw('x', 'y')
-
-    drawPoint(x, y, win, "green")
+    x, y, edges = getPointDraw('x', 'y')
+    print(edges)
+    drawEdges(x, y, edges, win, "green")
+    # drawPoint(x, y, win, "green")
     win.getMouse()
     win.close()
