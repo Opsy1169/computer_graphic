@@ -2,34 +2,6 @@ from graphics import *
 import numpy as np
 from parser_my import getPointDraw
 
-def main():
-    win = GraphWin('Face', 200, 150) # give title and dimensions
-    #win.yUp() # make right side up coordinates!
-    head = Circle(Point(40,100), 25) # set center and radius
-    head.setFill("yellow")
-    head.draw(win)
-
-    eye1 = Circle(Point(30, 105), 5)
-    eye1.setFill('blue')
-    eye1.draw(win)
-
-    eye2 = Line(Point(45, 105), Point(55, 105)) # set endpoints
-    eye2.setWidth(3)
-    eye2.draw(win)
-
-    mouth = Oval(Point(30, 90), Point(50, 85)) # set corners of bounding box
-    mouth.setFill("red")
-    mouth.draw(win)
-
-    label = Text(Point(100, 120), 'A face')
-    label.draw(win)
-
-    message = Text(Point(win.getWidth()/2, 20), 'Click anywhere to quit.')
-    message.draw(win)
-    win.getMouse()
-    win.close()
-
-
 def lineDotByDotFirst(x0, y0, x1, y1, win, color):
     step = 0.01
     arr = np.arange(0, 1, 0.01)
@@ -189,7 +161,6 @@ def drawEdges(x, y, edges, win, color):
         point1 = Point(-310*x[int(triangle.first)-1]+center, -310*y[int(triangle.first)-1]+center)
         point2 = Point(-310*x[int(triangle.second) - 1]+center, -310*y[int(triangle.second) - 1]+center)
         point3 = Point(-310*x[int(triangle.third) - 1]+center, -310*y[int(triangle.third) - 1]+center)
-        print(point1)
         lineDotByDotfour(point1.x, point1.y, point2.x, point2.y, win, color)
         lineDotByDotfour(point2.x, point2.y, point3.x, point3.y, win, color)
         lineDotByDotfour(point3.x, point3.y, point1.x, point1.y, win, color)
@@ -201,7 +172,6 @@ if __name__ == '__main__':
     win.setBackground("black")
 
     x, y, edges = getPointDraw('x', 'y')
-    print(edges)
     drawEdges(x, y, edges, win, "green")
     # drawPoint(x, y, win, "green")
     win.getMouse()
