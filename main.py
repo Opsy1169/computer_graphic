@@ -170,7 +170,6 @@ if __name__ == '__main__':
 
     win = GraphWin('Line', 1000, 1000)
     win.setBackground("black")
-
     x, y, edges = getPointDraw('x', 'y')
     drawEdges(x, y, edges, win, "green")
     # drawPoint(x, y, win, "green")
