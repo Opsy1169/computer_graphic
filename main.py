@@ -1,5 +1,5 @@
 from PIL import Image
-from graphics import *
+from graphics import Point
 
 import painter as pt
 from parser import getPointDraw
@@ -20,6 +20,6 @@ def drawEdges( x , y , edges , im: Image , line ) :
 
 if __name__ == '__main__' :
     im = Image.new( 'RGB' , (1000 , 1000) )
-    x , y , edges = getPointDraw( 'x' , 'y' )
-    drawEdges( x , y , edges , im , pt.line_vu )
-    im.save( 'res.png' )
+    vertexList , edgesList = getPointDraw( 'deer.obj' )
+    drawEdges( vertexList[ : , 1 ] , vertexList[ : , 2 ] , edgesList , im , pt.line_vu )
+    im.save( 'deer.png' )

@@ -3,8 +3,8 @@ import numpy as np
 import triangle as tr
 
 
-def getPointDraw( x , y ) :
-    objFile = open( 'african_head.obj' , 'r' )
+def getPointDraw( filename ) :
+    objFile = open( filename , 'r' )
     vertexList = [ ]
     edgesList = [ ]
     for line in objFile :
@@ -15,18 +15,11 @@ def getPointDraw( x , y ) :
             vertexList.append( split[ 1 : ] )
         if split[ 0 ] == "f" :
             edgesList.append( readEdges( line ) )
-
     objFile.close()
-
     vertexList = np.array( vertexList , dtype=np.float32 )
     vertexList = np.matrix( vertexList )
-
-    if (x == 'x') and (y == 'y') :
-        return vertexList[ : , 0 ] , vertexList[ : , 1 ] , edgesList
-    if (x == 'y') and (y == 'z') :
-        return vertexList[ : , 1 ] , vertexList[ : , 2 ] , edgesList
-    if (x == 'x') and (y == 'z') :
-        return vertexList[ : , 0 ] , vertexList[ : , 2 ] , edgesList
+    vertexList /= vertexList.max()
+    return vertexList , edgesList
 
 
 def readEdges( line ) :
