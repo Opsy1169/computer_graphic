@@ -18,8 +18,13 @@ def drawEdges( x , y , edges , im: Image , line ) :
         line( point3.x , point3.y , point1.x , point1.y , im )
 
 
+def is_inside_triangle( point: Point , first: Point , second: Point , third: Point ) -> bool :
+    # todo слайд 16 из лекция
+    return False
+
+
 if __name__ == '__main__' :
     im = Image.new( 'RGB' , (1000 , 1000) )
-    vertexList , edgesList = getPointDraw( 'deer.obj' )
-    drawEdges( vertexList[ : , 1 ] , vertexList[ : , 2 ] , edgesList , im , pt.line_vu )
-    im.save( 'deer.png' )
+    vertexList , edgesList = getPointDraw( 'african_head.obj' )
+    drawEdges( vertexList[ : , 0 ] , vertexList[ : , 1 ] , edgesList , im , pt.line_vu )
+    im.save( 'african_head.png' )
