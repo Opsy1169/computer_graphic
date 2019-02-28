@@ -61,6 +61,45 @@ class Triangle :
         self.third = third
 
     def direction( self ) -> Point :
+        """
+         Calculate by vector product vector, shows direction of polygon
+
+        :return: 3D direction vector
+        """
         first_vec = self.first.subtract( self.second )
         second_vec = self.first.subtract( self.third )
         return first_vec.vector_product( second_vec )
+
+    def bilinear_interpolation( self , point: graphics.Point ) -> float :
+        """
+        Calculate z depth of 2D point projection in 3D triangle polygon. Method recording to surface equation http://www.mathprofi.ru/uravnenie_ploskosti.html#ou
+
+        :param point: 2D point inside triangle projection to x-y surface, where need calculate z depth
+        :return: z depth
+        """
+        first , second , third = self.first , self.second , self.third
+
+        x0 , y0 , z0 = first.first , first.second , first.first
+        x1 , y1 , z1 = second.first , second.second , second.first
+        x2 , y2 , z2 = third.first , third.second , third.first
+        x , y = point.x , point.y
+        divider = ((x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0))
+        return z0 \
+               + (x - x0) * (((y2 - y0) * (z1 - z0) - (y1 - y0) * (z2 - z0)) / divider) \
+               + (y - y0) * (((x1 - x0) * (z2 - z0) - (x2 - x0) * (z1 - z0)) / divider)
+
+    def is_inside_triangle( self , point: graphics.Point ) -> bool :
+        """
+        Checks, if triangle, specified by 3 points, contains point. Doesn't record to 3D
+
+        :param point: gr.Point to check
+        :return: True, if triangle contains point inside
+        """
+        first , second , third = self.first.projection() , self.second.projection() , self.third.projection()
+        l0 = ((point.y - third.y) * (second.x - third.x) - (point.x - third.x) * (second.y - third.y)) / \
+             ((first.y - third.y) * (second.x - third.x) - (first.x - third.x) * (second.y - third.y))
+        l1 = ((point.y - first.y) * (third.x - first.x) - (point.x - first.x) * (third.y - first.y)) / \
+             ((second.y - first.y) * (third.x - first.x) - (second.x - first.x) * (third.y - first.y))
+        l2 = ((point.y - second.y) * (first.x - second.x) - (point.x - second.x) * (first.y - second.y)) / \
+             ((third.y - second.y) * (first.x - second.x) - (third.x - second.x) * (first.y - second.y))
+        return l0 >= 0 and l1 >= 0 and l2 >= 0

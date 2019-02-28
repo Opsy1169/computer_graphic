@@ -1,7 +1,7 @@
 import numpy as np
 from graphics import *
 
-from parser import getPointDraw
+from obj_parser import getPointDraw
 
 
 def lineDotByDotFirst( x0 , y0 , x1 , y1 , win , color ) :
