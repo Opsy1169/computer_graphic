@@ -3,29 +3,51 @@ import numpy as np
 import triangle as tr
 
 
-def getPointDraw( filename ) :
-    objFile = open( filename , 'r' )
-    vertexList = [ ]
-    edgesList = [ ]
-    for line in objFile :
+def getPointDraw(filename):
+    objFile = open(filename, 'r')
+    vertexList = []
+    edgesList = []
+    textureList = []
+    textureСoordinates = []
+
+    for line in objFile:
         split = line.split()
-        if not len( split ) :
+        if not len(split):
             continue
-        if split[ 0 ] == "v" :
-            vertexList.append( split[ 1 : ] )
-        if split[ 0 ] == "f" :
-            edgesList.append( readEdges( line ) )
+        if split[0] == "v":
+            vertexList.append(split[1:])
+        if split[0] == "vt":
+            textureList.append(readTextureInTriangl(line))
+        if split[0] == "f":
+            edgesList.append(readEdges(line))
+            textureСoordinates.append(readTexture(line))
+
     objFile.close()
-    vertexList = np.array( vertexList , dtype=np.float32 )
-    vertexList = np.matrix( vertexList )
+    vertexList = np.array(vertexList, dtype=np.float32)
+    vertexList = np.matrix(vertexList)
     vertexList /= vertexList.max()
-    return vertexList , edgesList
+    return vertexList, edgesList , textureList
 
-
-def readEdges( line ) :
+def readEdges(line):
     split = line.split()
-    vertexes = [ ]
-    for i in range( 1 , len( split ) ) :
-        vertexes.append( split[ i ].split( '/' )[ 0 ] )
-    triangle = tr.Triangle( vertexes[ 0 ] , vertexes[ 1 ] , vertexes[ 2 ] )
+    vertexes = []
+    for i in range(1, len(split)):
+        vertexes.append(split[i].split('/')[0])
+    triangle = tr.Triangle(vertexes[0], vertexes[1], vertexes[2])
+    return triangle
+
+def readTexture(line):
+    split = line.split()
+    texture = []
+    for i in range(1, len(split)):
+        texture.append(split[i].split('/')[1])
+    triangle = tr.Triangle(texture[0], texture[1], texture[2])
+    return triangle
+
+def readTextureInTriangl(line):
+    split = line.split(' ')
+    texture = []
+    for i in range(2, len(split)):
+        texture.append(split[i])
+    triangle = tr.Triangle(texture[0], texture[1], texture[2])
     return triangle
