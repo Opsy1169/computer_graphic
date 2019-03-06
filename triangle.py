@@ -54,7 +54,6 @@ class Triangle:
     """
     Describes triangle polygon
     """
-
     def __init__(self, first: Point, second: Point, third: Point, textureFirst = 0, textureSecond = 0, textureThird = 0):
         self.first = first
         self.second = second
@@ -63,17 +62,10 @@ class Triangle:
         self.textureSecond = textureSecond
         self.textureThird = textureThird
 
-    # def __init__(self, first: Point, second: Point, third: Point):
-    #     self.first = first
-    #     self.second = second
-    #     self.third = third
-
-
     def direction(self) -> Point:
         """
          Calculate by vector product vector, shows direction of polygon
-
-        :return: 3D direction vector
+:return: 3D direction vector
         """
         first_vec = self.first.subtract(self.second)
         second_vec = self.first.subtract(self.third)
@@ -118,5 +110,5 @@ class Triangle:
         l2 = ((point.y - second.y) * (first.x - second.x) - (point.x - second.x) * (first.y - second.y)) / \
              ((third.y - second.y) * (first.x - second.x) - (third.x - second.x) * (first.y - second.y))
 
-        return l0,l1,l2
+        return l0, l1, l2
 

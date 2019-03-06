@@ -25,7 +25,8 @@ def get_point(index):
 #думаю, и так нормально. Вычитать нужно, потому что он так в каком-то перевернутом виде. Установил просто эмпирически
 #texture -- картинка с текстурой, сами значения в обж лежат в диапазоне от 0 до 1, так что надо умножать на размер по каждому измерению
 def get_texture_point(index):
-    return tr.Point(texture.size[0]*float(texture_coordinates[index].first), texture.size[1] - texture.size[1]*float(texture_coordinates[index].second), 0)
+    return tr.Point(texture.size[0]*float(texture_coordinates[index].first), texture.size[1] -
+                    texture.size[1]*float(texture_coordinates[index].second), 0)
 
 
 if __name__ == '__main__':
@@ -33,7 +34,7 @@ if __name__ == '__main__':
     texture = Image.open('african_head_diffuse.png')
     texture = texture.convert('RGB')
     width, height = texture.size
-    print(width, height)
+
     draw = ImageDraw.Draw(im)
     scale = - im.width / 2 * .9
     center = im.width / 2

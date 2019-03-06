@@ -129,12 +129,6 @@ def paint_triangle(polygon: tr.Triangle, draw: ImageDraw, z_buffer, light_angle,
     if fill:
         colorize(polygon, draw, light_angle, texture, z_buffer, color)
 
-def get_texture():
-    vertex_list, edges_list, texture_list = getPointDraw('african_head.obj')
-    im = Image.open("african_head_diffuse.tga")
-
-    im.save('african_head_diffuse.png')
-
 
 
 
