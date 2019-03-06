@@ -97,7 +97,7 @@ def draw_pixel(point: tr.Point, z_buffer, draw: ImageDraw, color=(255, 0, 0)):
         z_buffer[point.first, point.second] = point.third
 
 
-def colorize(polygon: tr.Triangle, draw: ImageDraw, z_buffer, color=(255, 0, 0)):
+def colorize(polygon: tr.Triangle, draw: ImageDraw, light_angle, texture: Image, z_buffer, color=(255, 0, 0)):
     """
     Colorize inner part of triangle with specified color
     """
@@ -108,19 +108,26 @@ def colorize(polygon: tr.Triangle, draw: ImageDraw, z_buffer, color=(255, 0, 0))
     y1 = int(max(first.second, second.second, third.second))
     for x in range(x0, x1 + 1):
         for y in range(y0, y1 + 1):
-            if polygon.is_inside_triangle(gr.Point(x, y)):
+            l0, l1, l2 = polygon.getBaricenterCordinates((gr.Point(x, y)))
+            is_inside_triangle = l0 >= 0 and l1 >= 0 and l2 >= 0
+            if is_inside_triangle:
+                #получаем координаты пикселя, соответствующего отрисовываемому в данный момент, из файла текстур
+                coord1 = int(polygon.textureFirst.first*l0 + polygon.textureSecond.first*l1 + polygon.textureThird.first*l2)
+                coord2 = int(polygon.textureFirst.second*l0 + polygon.textureSecond.second*l1 + polygon.textureThird.second*l2)
+                #получаем цвет пикселя из файла текстур по вычисленным координатам
+                (r, g, b) = texture.getpixel((coord1, coord2))
                 z = polygon.bilinear_interpolation(gr.Point(x, y))
-                draw_pixel(tr.Point(x, y, z), z_buffer, draw, color)
+                draw_pixel(tr.Point(x, y, z), z_buffer, draw, tuple( int (color*light_angle) for color in (r, g, b)))
 
 
-def paint_triangle(polygon: tr.Triangle, draw: ImageDraw, z_buffer, color=(255, 0, 0),
+def paint_triangle(polygon: tr.Triangle, draw: ImageDraw, z_buffer, light_angle, texture, color=(255, 0, 0),
                    line_func=line_brezenhem, lines=True, fill=True):
     if lines:
         line_func(polygon.first.projection(), polygon.second.projection(), draw, color)
         line_func(polygon.second.projection(), polygon.third.projection(), draw, color)
         line_func(polygon.third.projection(), polygon.first.projection(), draw, color)
     if fill:
-        colorize(polygon, draw, z_buffer, color)
+        colorize(polygon, draw, light_angle, texture, z_buffer, color)
 
 def get_texture():
     vertex_list, edges_list, texture_list = getPointDraw('african_head.obj')

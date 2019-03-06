@@ -55,10 +55,19 @@ class Triangle:
     Describes triangle polygon
     """
 
-    def __init__(self, first: Point, second: Point, third: Point):
+    def __init__(self, first: Point, second: Point, third: Point, textureFirst = 0, textureSecond = 0, textureThird = 0):
         self.first = first
         self.second = second
         self.third = third
+        self.textureFirst = textureFirst
+        self.textureSecond = textureSecond
+        self.textureThird = textureThird
+
+    # def __init__(self, first: Point, second: Point, third: Point):
+    #     self.first = first
+    #     self.second = second
+    #     self.third = third
+
 
     def direction(self) -> Point:
         """
@@ -99,6 +108,7 @@ class Triangle:
         l0,l1,l2 = self.getBaricenterCordinates(point)
         return l0 >= 0 and l1 >= 0 and l2 >= 0
 
+#Вынесли в отдельный метод, потому что для текстур нужно не только проверить условие, но и сами координаты
     def getBaricenterCordinates(self, point: graphics.Point):
         first, second, third = self.first.projection(), self.second.projection(), self.third.projection()
         l0 = ((point.y - third.y) * (second.x - third.x) - (point.x - third.x) * (second.y - third.y)) / \
