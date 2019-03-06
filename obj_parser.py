@@ -7,7 +7,6 @@ def getPointDraw( filename ) :
     objFile = open( filename , 'r' )
     vertexList = [ ]
     edgesList = [ ]
-    textureVertexes = [ ]
     textureСoordinates = [ ]
 
     for line in objFile :

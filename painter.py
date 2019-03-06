@@ -3,7 +3,6 @@ import numpy as np
 from PIL import Image , ImageDraw
 
 import triangle as tr
-from obj_parser import getPointDraw
 
 
 def line_brezenhem( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 , 0) ) :
@@ -127,12 +126,3 @@ def paint_triangle( polygon: tr.Triangle , draw: ImageDraw , z_buffer , light_an
         line_func( polygon.third.projection() , polygon.first.projection() , draw , color )
     if fill :
         colorize( polygon , draw , light_angle , texture , z_buffer , color )
-
-
-
-
-
-
-
-
-

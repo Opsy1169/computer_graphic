@@ -27,7 +27,7 @@ def get_point( index ) :
 def get_texture_point( index ) :
     return tr.Point( texture.size[ 0 ] * float( texture_coordinates[ index ].first ) ,
                      texture.size[ 1 ] -
-                    texture.size[ 1 ] * float( texture_coordinates[ index ].second ) , 0 )
+                     texture.size[ 1 ] * float( texture_coordinates[ index ].second ) , 0 )
 
 
 if __name__ == '__main__' :
