@@ -26,7 +26,6 @@ class Point :
     def angle( self , another ) -> float :
         """
         Calculate cos of angle with another vector
-
         :param another: vector to multiply
         :return: cos of angle
         """
@@ -47,7 +46,23 @@ class Point :
 
         :return: 2D Point from graphics module
         """
-        return graphics.Point( self.first , self.second )
+        f = 40000
+        w = 500
+        h = 500
+        M = np.array([ self.first , self.second,  self.third + 5  ,1])
+        K = np.zeros((3,4))
+        K[0][0]= 1500
+        K[1][1]= 1500
+        K[2][2]=1
+        K[0][2]= 500
+        K[1][2]= 500
+        m = K.dot(M)
+        m /=m[2]
+        self.first = m[0]
+        self.second = m[1]
+        self.third = 1
+        return graphics.Point( self.first, self.second)
+
 
 
 class Triangle :
@@ -103,12 +118,12 @@ class Triangle :
 
     # Вынесли в отдельный метод, потому что для текстур нужно не только проверить условие, но и сами координаты
     def getBaricenterCordinates( self , point: graphics.Point ) :
-        first , second , third = self.first.projection() , self.second.projection() , self.third.projection()
-        l0 = ((point.y - third.y) * (second.x - third.x) - (point.x - third.x) * (second.y - third.y)) / \
-             ((first.y - third.y) * (second.x - third.x) - (first.x - third.x) * (second.y - third.y))
-        l1 = ((point.y - first.y) * (third.x - first.x) - (point.x - first.x) * (third.y - first.y)) / \
-             ((second.y - first.y) * (third.x - first.x) - (second.x - first.x) * (third.y - first.y))
-        l2 = ((point.y - second.y) * (first.x - second.x) - (point.x - second.x) * (first.y - second.y)) / \
-             ((third.y - second.y) * (first.x - second.x) - (third.x - second.x) * (first.y - second.y))
+        first , second , third = self.first , self.second , self.third
+        l0 = ((point.y - third.second) * (second.first - third.first) - (point.x - third.first) * (second.second - third.second)) / \
+             ((first.second - third.second) * (second.first - third.first) - (first.first - third.first) * (second.second - third.second))
+        l1 = ((point.y - first.second) * (third.first - first.first) - (point.x - first.first) * (third.second - first.second)) / \
+             ((second.second - first.second) * (third.first - first.first) - (second.first - first.first) * (third.second - first.second))
+        l2 = ((point.y - second.second) * (first.first - second.first) - (point.x - second.first) * (first.second - second.second)) / \
+             ((third.second - second.second) * (first.first - second.first) - (third.first - second.first) * (first.second - second.second))
 
         return l0 , l1 , l2

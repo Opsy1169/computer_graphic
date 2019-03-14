@@ -29,6 +29,19 @@ def get_texture_point( index ) :
                      texture.size[ 1 ] -
                      texture.size[ 1 ] * float( texture_coordinates[ index ].second ) , 0 )
 
+def Matrix_viewport(x, y, w, h) :
+
+    matrix = np.eye(4)
+    matrix[0][3] = x+w/2.
+    matrix[1][3] = y+h/2.
+
+
+    matrix[0][0] = w/2.
+    matrix[1][1] = h/2.
+
+    return matrix
+
+
 
 if __name__ == '__main__' :
     im = Image.new( 'RGB' , (1000 , 1000) , color=(255 , 255 , 255 , 0) )
@@ -37,11 +50,14 @@ if __name__ == '__main__' :
     width , height = texture.size
 
     draw = ImageDraw.Draw( im )
-    scale = - im.width / 2 * .9
-    center = im.width / 2
+    # scale = - im.width / 2 * .9
+    # center = im.width / 2
+    scale = -1
+    center = 0
     vertex_list , edges_list_with_text , texture_coordinates = getPointDraw( 'african_head.obj' )
+
     color = (255 , 255 , 255)
-    cam_direction = tr.Point( 0 , 0 , 1 )
+    cam_direction = tr.Point( 0 , 0, 1 )
     light_direction = tr.Point( 0 , 0 , 1 )
     z_buffer = np.array( list( repeat( sys.maxsize , im.width * im.height ) ) )
     z_buffer.shape = (im.width , im.height)
@@ -59,6 +75,6 @@ if __name__ == '__main__' :
         # Вообще говоря, для отрисовки треугольников color больше не нужен, поскольку цвет берется из файла текстур,
         # но раз уж у нас остается функционал отрисовки линий, то передавать цвет все равно нужно
         pt.paint_triangle( triangle , draw , z_buffer , light_angle , texture , color=tuple( [ int( i * light_angle ) for i in list( color ) ] ) ,
-                           lines=False )
+                           lines=False)
 
     im.save( 'african_head.png' )

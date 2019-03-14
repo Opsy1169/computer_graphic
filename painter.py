@@ -95,18 +95,20 @@ def draw_pixel( point: tr.Point , z_buffer , draw: ImageDraw , color=(255 , 0 , 
         z_buffer[ point.first , point.second ] = point.third
 
 
-def colorize( polygon: tr.Triangle , draw: ImageDraw , light_angle , texture: Image , z_buffer , color=(255 , 0 , 0) ) :
+def colorize( polygon: tr.Triangle,polygon2D:tr.Triangle, draw: ImageDraw , light_angle , texture: Image , z_buffer , color=(255 , 0 , 0) ) :
     """
     Colorize inner part of triangle with specified color
     """
-    first , second , third = polygon.first , polygon.second , polygon.third
-    x0 = int( min( first.first , second.first , third.first ) )
-    x1 = int( max( first.first , second.first , third.first ) )
-    y0 = int( min( first.second , second.second , third.second ) )
-    y1 = int( max( first.second , second.second , third.second ) )
+    first2 , second2 , third2 = polygon.first.projection() , polygon.second.projection() , polygon.third.projection()
+    first , second , third = polygon2D.first , polygon2D.second , polygon2D.third
+
+    x0 = int( max (min( first.first , second.first , third.first ), 0) )
+    x1 = int( min ( max( first.first , second.first , third.first ), 999) )
+    y0 = int(max( min( first.second , second.second , third.second ), 0) )
+    y1 = int( min( max( first.second , second.second , third.second ), 999) )
     for x in range( x0 , x1 + 1 ) :
         for y in range( y0 , y1 + 1 ) :
-            l0 , l1 , l2 = polygon.getBaricenterCordinates( (gr.Point( x , y )) )
+            l0 , l1 , l2 = polygon2D.getBaricenterCordinates( (gr.Point( x , y )) )
             is_inside_triangle = l0 >= 0 and l1 >= 0 and l2 >= 0
             if is_inside_triangle :
                 # получаем координаты пикселя, соответствующего отрисовываемому в данный момент, из файла текстур
@@ -114,7 +116,7 @@ def colorize( polygon: tr.Triangle , draw: ImageDraw , light_angle , texture: Im
                 coord2 = int( polygon.textureFirst.second * l0 + polygon.textureSecond.second * l1 + polygon.textureThird.second * l2 )
                 # получаем цвет пикселя из файла текстур по вычисленным координатам
                 (r , g , b) = texture.getpixel( (coord1 , coord2) )
-                z = polygon.bilinear_interpolation( gr.Point( x , y ) )
+                z = polygon2D.bilinear_interpolation( gr.Point( x , y ) )
                 draw_pixel( tr.Point( x , y , z ) , z_buffer , draw , tuple( int( color * light_angle ) for color in (r , g , b) ) )
 
 
@@ -125,4 +127,14 @@ def paint_triangle( polygon: tr.Triangle , draw: ImageDraw , z_buffer , light_an
         line_func( polygon.second.projection() , polygon.third.projection() , draw , color )
         line_func( polygon.third.projection() , polygon.first.projection() , draw , color )
     if fill :
-        colorize( polygon , draw , light_angle , texture , z_buffer , color )
+        first = polygon.first.projection()
+        second = polygon.second.projection()
+        third = polygon.third.projection()
+
+        point1 = tr.Point(first.x,first.y,1)
+        point2 = tr.Point(second.x,second.y,1)
+        point3 = tr.Point(third.x,third.y,1)
+
+        polygon2D = tr.Triangle(point1,point2,point3)
+        colorize(polygon,polygon2D, draw , light_angle , texture , z_buffer , color )
+
