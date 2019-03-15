@@ -32,7 +32,7 @@ def get_texture_point(index):
 
 def new3DCoordinates(t, axis, angle):
     if (axis[0] == 1):
-        alpha = angle[0]  # угол
+        alpha = np.radians(angle[0])  # угол
         R_x = np.array(np.zeros((3, 4)))  # вращение вокруг оси х
         R_x[0, 0] = 1
         R_x[1, 1] = np.cos(alpha)
@@ -49,7 +49,7 @@ def new3DCoordinates(t, axis, angle):
             vertex_list[i, 2] = tmp[2]
 
     if (axis[1] == 1):  # вращение вокруг оси y
-        alpha = angle[1]  # угол
+        alpha = np.radians(angle[1])
         R_y = np.array(np.zeros((3, 4)))
         R_y[0, 0] = np.cos(alpha)
         R_y[1, 1] = 1
@@ -66,7 +66,7 @@ def new3DCoordinates(t, axis, angle):
             vertex_list[i, 2] = tmp[2]
 
     if (axis[2] == 1):  # вращение вокруг оси z
-        alpha = angle[2]  # угол
+        alpha = np.radians(angle[2])
         R_z = np.array(np.zeros((3, 4)))
         R_z[0, 0] = np.cos(alpha)
         R_z[1, 1] = np.cos(alpha)
@@ -86,11 +86,11 @@ def new3DCoordinates(t, axis, angle):
 
 
 def setParametrsForProjection():
-    camera_offset = 15
+    camera_offset = 10
     f_u = 1500
     f_v = 1500
-    u_0 = 800
-    v_0 = 800
+    u_0 = 500
+    v_0 = 500
     return camera_offset, f_u, f_v, u_0, v_0
 
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     scale = -1
     center = 0
     vertex_list, edges_list_with_text, texture_coordinates = getPointDraw('african_head.obj')
-    vertex_list = new3DCoordinates(t=[0, 0, 4], axis=[1, 1, 1], angle=[45, 90, 45])
+    vertex_list = new3DCoordinates(t=[0, 0, 4], axis=[0, 1, 0], angle=[0, 45, 0])
 
     color = (255, 255, 255)
     cam_direction = tr.Point(0, 0, 1)
