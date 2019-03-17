@@ -95,46 +95,41 @@ def draw_pixel( point: tr.Point , z_buffer , draw: ImageDraw , color=(255 , 0 , 
         z_buffer[ point.first , point.second ] = point.third
 
 
-def colorize( polygon: tr.Triangle,polygon2D:tr.Triangle, draw: ImageDraw , light_angle , texture: Image , z_buffer , color=(255 , 0 , 0) ) :
+def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffer):
     """
     Colorize inner part of triangle with specified color
     """
-    first2 , second2 , third2 = polygon.first.projection() , polygon.second.projection() , polygon.third.projection()
-    first , second , third = polygon2D.first , polygon2D.second , polygon2D.third
+    first , second , third = polygon.first.projection() , polygon.second.projection() , polygon.third.projection()
 
-    x0 = int( max (min( first.first , second.first , third.first ), 0) )
-    x1 = int( min ( max( first.first , second.first , third.first ), 999) )
-    y0 = int(max( min( first.second , second.second , third.second ), 0) )
-    y1 = int( min( max( first.second , second.second , third.second ), 999) )
+    x0 = int(min(first.x, second.x, third.x))
+    x1 = int(max(first.x, second.x, third.x))
+    y0 = int(min(first.y, second.y, third.y))
+    y1 = int(max(first.y, second.y, third.y))
+
     for x in range( x0 , x1 + 1 ) :
         for y in range( y0 , y1 + 1 ) :
-            l0 , l1 , l2 = polygon2D.getBaricenterCordinates( (gr.Point( x , y )) )
-            is_inside_triangle = l0 >= 0 and l1 >= 0 and l2 >= 0
+            barycentric = polygon.getBaricenterCordinates(gr.Point(x, y))
+            is_inside_triangle = all( i >= 0 for i in barycentric )
             if is_inside_triangle :
                 # получаем координаты пикселя, соответствующего отрисовываемому в данный момент, из файла текстур
-                coord1 = int( polygon.textureFirst.first * l0 + polygon.textureSecond.first * l1 + polygon.textureThird.first * l2 )
-                coord2 = int( polygon.textureFirst.second * l0 + polygon.textureSecond.second * l1 + polygon.textureThird.second * l2 )
                 # получаем цвет пикселя из файла текстур по вычисленным координатам
-                (r , g , b) = texture.getpixel( (coord1 , coord2) )
-                z = polygon2D.bilinear_interpolation( gr.Point( x , y ) )
-                draw_pixel( tr.Point( x , y , z ) , z_buffer , draw , tuple( int( color * light_angle ) for color in (r , g , b) ) )
+                z = polygon.bilinear_interpolation( gr.Point( x , y ) )
+                draw_pixel(tr.Point(x, y, z), z_buffer, draw, texture.getpixel(get_texture_point(polygon, barycentric)))
 
 
-def paint_triangle( polygon: tr.Triangle , draw: ImageDraw , z_buffer , light_angle , texture , color=(255 , 0 , 0) ,
-                    line_func=line_brezenhem , lines=True , fill=True ) :
-    if lines :
-        line_func( polygon.first.projection() , polygon.second.projection() , draw , color )
-        line_func( polygon.second.projection() , polygon.third.projection() , draw , color )
-        line_func( polygon.third.projection() , polygon.first.projection() , draw , color )
-    if fill :
-        first = polygon.first.projection()
-        second = polygon.second.projection()
-        third = polygon.third.projection()
+def get_texture_point(polygon, barycentric):
+    coord1 = int(sum(i * j for i, j in
+                     zip((polygon.textureFirst.first, polygon.textureSecond.first,
+                          polygon.textureThird.first),
+                         barycentric)))
+    coord2 = int(sum(i * j for i, j in
+                     zip((polygon.textureFirst.second, polygon.textureSecond.second,
+                          polygon.textureThird.second),
+                         barycentric)))
+    return coord1, coord2
 
-        point1 = tr.Point(first.x,first.y,1)
-        point2 = tr.Point(second.x,second.y,1)
-        point3 = tr.Point(third.x,third.y,1)
 
-        polygon2D = tr.Triangle(point1,point2,point3)
-        colorize(polygon,polygon2D, draw , light_angle , texture , z_buffer , color )
-
+def paint_line(color, draw, line_func, polygon):
+    line_func(polygon.first.projection(), polygon.second.projection(), draw, color)
+    line_func(polygon.second.projection(), polygon.third.projection(), draw, color)
+    line_func(polygon.third.projection(), polygon.first.projection(), draw, color)

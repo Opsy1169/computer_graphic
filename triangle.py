@@ -46,7 +46,11 @@ class Point:
 
         :return: 2D Point from graphics module
         """
-        camera_offset, f_u, f_v, u_0, v_0 = main.setParametrsForProjection()
+
+        # todo Не стоит менять значения self, лучше просто вернуть новый измененный объект
+        # Сейчас картинка артефачит, потому что забали болт на z координату ( self.third = 1), надо понять,
+        # как ей поставить правильное значение
+        camera_offset, f_u, f_v, u_0, v_0 = main.setParametersForProjection()
         M = np.array([self.first, self.second, self.third + camera_offset, 1])
         K = np.zeros((3, 4))
         K[0][0] = f_u
