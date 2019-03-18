@@ -8,7 +8,6 @@ import triangle as tr
 def line_brezenhem( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 , 0) ) :
     """
      Draws line from start to end 2D Point via Brezenhem algorithm ( without gradient subline )
-
     :param start: starting line 2D point
     :param end: ending line 2D point
     :param draw: drawing tool from Pillow module
@@ -45,7 +44,6 @@ def line_brezenhem( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(2
 def line_vu( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 , 0) ) :
     """
          Draws line from start to end 2D Point via Vu algorithm ( with gradient subline )
-
         :param start: starting line 2D point
         :param end: ending line 2D point
         :param draw: drawing tool from Pillow module
@@ -109,11 +107,12 @@ def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffe
     for x in range( x0 , x1 + 1 ) :
         for y in range( y0 , y1 + 1 ) :
             barycentric = polygon.getBaricenterCordinates(gr.Point(x, y))
+
             is_inside_triangle = all( i >= 0 for i in barycentric )
             if is_inside_triangle :
                 # получаем координаты пикселя, соответствующего отрисовываемому в данный момент, из файла текстур
                 # получаем цвет пикселя из файла текстур по вычисленным координатам
-                z = polygon.bilinear_interpolation( gr.Point( x , y ) )
+                z = polygon.tmp_Z(barycentric)
                 draw_pixel(tr.Point(x, y, z), z_buffer, draw, texture.getpixel(get_texture_point(polygon, barycentric)))
 
 

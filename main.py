@@ -12,13 +12,11 @@ from obj_parser import getPointDraw
 def get_point(index):
     """
     extract 3D point from vertex_list with specified index with scale and center point, recording to main image
-
     P.S. use negative values because object is rotated upside-down
-
     :param index: index of point in vertex_list, starting form 0
     :return: 3D Point from triangle module
     """
-    return tr.Point(-vertex_list[index, 0], -vertex_list[index, 1], -vertex_list[index, 2])
+    return tr.Point(-vertex_list[index, 0],-vertex_list[index, 1], -vertex_list[index, 2])
 
 
 # завел отдельный метод, потому что чтобы унифицировать с get_point, то надо будет постоянно массив передавать,
@@ -35,7 +33,6 @@ def get_texture_point(index):
 def rotate_object(vertex_list, rotation_angle, cam_position):
     """
     Rotate vertexes on specific angel on each axis
-
     :param vertex_list: list of model's vertexes
     :param rotation_angle: tuple, contains rotation angles on x,y and z axis
     :return: rotated vertexes list
@@ -45,6 +42,7 @@ def rotate_object(vertex_list, rotation_angle, cam_position):
     for i in range(len(vertex_list)):
         M = np.concatenate((np.array(vertex_list[i, :]).reshape(3, 1), np.array(1).reshape(1, 1)))
         vertex_list[i, :] = np.matmul(R, M).reshape(1, 3)
+        vertex_list[i,2] = vertex_list[i,2]
     return vertex_list
 
 
@@ -80,13 +78,11 @@ def create_rotation_matrix(rotation_angle, cam_position):
 
 
 def setParametersForProjection():
-    camera_offset = 10
     f_u = 1500
     f_v = 1500
     u_0 = 500
     v_0 = 500
-    return camera_offset, f_u, f_v, u_0, v_0
-
+    return  f_u, f_v, u_0, v_0
 
 if __name__ == '__main__':
     im = Image.new('RGB', (1000, 1000), color=(255, 255, 255, 0))
@@ -95,14 +91,15 @@ if __name__ == '__main__':
     width, height = texture.size
 
     draw = ImageDraw.Draw(im)
-    cam_position = (0, 0, 5)
+    cam_position = (0, 0, -5)
     cam_direction = tr.Point(0, 0, 1)
 
-    z_buffer = np.array(list(repeat(sys.maxsize, im.width * im.height)))
+    z_buffer = np.array(list(repeat(float(sys.maxsize), im.width * im.height)))
+
     z_buffer.shape = (im.width, im.height)
 
     vertex_list, edges_list_with_text, texture_coordinates = getPointDraw('african_head.obj')
-    vertex_list = rotate_object(vertex_list, (0, 45, 0), cam_position)
+    vertex_list = rotate_object(vertex_list, (45,45, 45), cam_position)
 
     trianglesWithCoords = [tr.Triangle(get_point(int(triangle.first) - 1),
                                        get_point(int(triangle.second) - 1),

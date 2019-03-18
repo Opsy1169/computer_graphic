@@ -43,15 +43,14 @@ class Point:
         """
         Convert to 2D point, x and y axis.
         Need rotation method
-
         :return: 2D Point from graphics module
         """
 
         # todo Не стоит менять значения self, лучше просто вернуть новый измененный объект
-        # Сейчас картинка артефачит, потому что забали болт на z координату ( self.third = 1), надо понять,
+        # Сейчас картинка артефачит, потому что забили болт на z координату ( self.third = 1), надо понять,
         # как ей поставить правильное значение
-        camera_offset, f_u, f_v, u_0, v_0 = main.setParametersForProjection()
-        M = np.array([self.first, self.second, self.third + camera_offset, 1])
+        f_u, f_v, u_0, v_0 = main.setParametersForProjection()
+        M = np.array([self.first, self.second, self.third, 1])
         K = np.zeros((3, 4))
         K[0][0] = f_u
         K[1][1] = f_v
@@ -62,7 +61,7 @@ class Point:
         m /= m[2]
         self.first = m[0]
         self.second = m[1]
-        self.third = 1
+
         return graphics.Point(self.first, self.second)
 
 
@@ -88,11 +87,17 @@ class Triangle:
         second_vec = self.first.subtract(self.third)
         return first_vec.vector_product(second_vec)
 
+    def tmp_Z(self, barycentric):
+        l0, l1, l2 = barycentric
+        return self.first.third * l0 + self.second.third * l1 + self.third.third * l2
+
+    @DeprecationWarning
     def bilinear_interpolation(self, point: graphics.Point) -> float:
+        # Не используется вместо нее tmp_Z
+
         """
         Calculate z depth of 2D point projection in 3D triangle polygon. Method recording to surface
         equation http://www.mathprofi.ru/uravnenie_ploskosti.html#ou
-
         :param point: 2D point inside triangle projection to x-y surface, where need calculate z depth
         :return: z depth
         """
@@ -110,7 +115,6 @@ class Triangle:
     def is_inside_triangle(self, point: graphics.Point) -> bool:
         """
         Checks, if triangle, specified by 3 points, contains point. Doesn't record to 3D
-
         :param point: gr.Point to check
         :return: True, if triangle contains point inside
         """
@@ -121,16 +125,16 @@ class Triangle:
     def getBaricenterCordinates(self, point: graphics.Point):
         first, second, third = self.first, self.second, self.third
         l0 = ((point.y - third.second) * (second.first - third.first) - (point.x - third.first) * (
-                    second.second - third.second)) / \
+                second.second - third.second)) / \
              ((first.second - third.second) * (second.first - third.first) - (first.first - third.first) * (
-                         second.second - third.second))
+                     second.second - third.second))
         l1 = ((point.y - first.second) * (third.first - first.first) - (point.x - first.first) * (
-                    third.second - first.second)) / \
+                third.second - first.second)) / \
              ((second.second - first.second) * (third.first - first.first) - (second.first - first.first) * (
-                         third.second - first.second))
+                     third.second - first.second))
         l2 = ((point.y - second.second) * (first.first - second.first) - (point.x - second.first) * (
-                    first.second - second.second)) / \
+                first.second - second.second)) / \
              ((third.second - second.second) * (first.first - second.first) - (third.first - second.first) * (
-                         first.second - second.second))
+                     first.second - second.second))
 
         return l0, l1, l2
