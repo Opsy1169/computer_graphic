@@ -84,18 +84,19 @@ def line_vu( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 
             error -= 1
 
 
-def draw_pixel( point: tr.Point , z_buffer , draw: ImageDraw , color=(255 , 0 , 0) ) :
+def draw_pixel( point: tr.Point , z_buffer , draw: ImageDraw ,get_pixel,intensity  ,pixels, color=(255 , 0 , 0) ) :
     """
     Draws pixel, if it's z depth is lower then previous points
 
     """
-
     if point.third < z_buffer[ point.first , point.second ] :
         draw.point( [ point.first , point.second ] , fill=color )
         z_buffer[ point.first , point.second ] = point.third
+        pixels[get_pixel[0], get_pixel[1]] = (int(255 * intensity ), int(255 * intensity ),
+                                              int(255 * intensity ))
 
 
-def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffer):
+def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffer ):
     """
     Colorize inner part of triangle with specified color
     """
@@ -115,9 +116,24 @@ def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffe
                 # получаем координаты пикселя, соответствующего отрисовываемому в данный момент, из файла текстур
                 # получаем цвет пикселя из файла текстур по вычисленным координатам
                 z = polygon.tmp_Z(barycentric)
-                color = (texture.getpixel(get_texture_point(polygon, barycentric)))
+                get_pixel = get_texture_point(polygon, barycentric)
+                color = (texture.getpixel(get_pixel))
+                pixels = texture.load()
 
-                draw_pixel(tr.Point(x, y, z), z_buffer, draw, color)
+                intensity = (polygon.normalFirst.first +polygon.normalFirst.second + polygon.normalFirst.third) *barycentric[0]+\
+                    (polygon.normalSecond.first +polygon.normalSecond.second + polygon.normalSecond.third) *barycentric[1]+\
+                    (polygon.normalThird.first +polygon.normalThird.second + polygon.normalThird.third) *barycentric[2]
+
+                if (intensity > .85) :intensity = 1
+                elif (intensity > .60): intensity = .80;
+                elif (intensity > .45) :intensity = .60;
+                elif (intensity > .30) :intensity = .45;
+                elif (intensity > .15) :intensity = .30;
+                else :intensity = 0
+
+
+
+                draw_pixel(tr.Point(x, y, z), z_buffer, draw,get_pixel,intensity ,pixels,color)
 
 
 def get_texture_point(polygon, barycentric):
