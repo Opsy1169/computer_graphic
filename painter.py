@@ -87,7 +87,9 @@ def line_vu( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 
 def draw_pixel( point: tr.Point , z_buffer , draw: ImageDraw , color=(255 , 0 , 0) ) :
     """
     Draws pixel, if it's z depth is lower then previous points
+
     """
+
     if point.third < z_buffer[ point.first , point.second ] :
         draw.point( [ point.first , point.second ] , fill=color )
         z_buffer[ point.first , point.second ] = point.third
@@ -113,7 +115,9 @@ def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffe
                 # получаем координаты пикселя, соответствующего отрисовываемому в данный момент, из файла текстур
                 # получаем цвет пикселя из файла текстур по вычисленным координатам
                 z = polygon.tmp_Z(barycentric)
-                draw_pixel(tr.Point(x, y, z), z_buffer, draw, texture.getpixel(get_texture_point(polygon, barycentric)))
+                color = (texture.getpixel(get_texture_point(polygon, barycentric)))
+
+                draw_pixel(tr.Point(x, y, z), z_buffer, draw, color)
 
 
 def get_texture_point(polygon, barycentric):
