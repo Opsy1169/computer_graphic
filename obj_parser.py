@@ -8,6 +8,7 @@ def getPointDraw( filename ) :
     vertexList = [ ]
     edgesList = [ ]
     textureСoordinates = [ ]
+    vectorNormal = []
 
     for line in objFile :
         split = line.split()
@@ -19,12 +20,18 @@ def getPointDraw( filename ) :
             textureСoordinates.append( readTextureInTriangl( line ) )
         if split[ 0 ] == "f" :
             edgesList.append( readEdgesWithTextures( line ) )
+        if split[0] == "vn":
+             vectorNormal.append(split[1:])
 
     objFile.close()
     vertexList = np.array( vertexList , dtype=np.float32 )
     vertexList = np.matrix( vertexList )
     vertexList /= vertexList.max()
-    return vertexList , edgesList , textureСoordinates
+
+    vectorNormal = np.array( vectorNormal , dtype=np.float32 )
+    vectorNormal = np.matrix( vectorNormal )
+    vectorNormal /= vectorNormal.max()
+    return vertexList , edgesList , textureСoordinates, vectorNormal
 
 
 # Переписал метод, чтобы он одновременно считывал и вершины, и информацию про текстуры, я думаю, так удобнее,
@@ -39,7 +46,9 @@ def readEdgesWithTextures( line ) :
         indexesBySlash = split[ i ].split( '/' )
         vertexes.append( indexesBySlash[ 0 ] )
         textures.append( indexesBySlash[ 1 ] )
-    triangle = tr.Triangle( vertexes[ 0 ] , vertexes[ 1 ] , vertexes[ 2 ] , textures[ 0 ] , textures[ 1 ] , textures[ 2 ] )
+    triangle = tr.Triangle( vertexes[ 0 ] , vertexes[ 1 ] , vertexes[ 2 ] ,
+                            vertexes[0], vertexes[1], vertexes[2],
+                            textures[ 0 ] , textures[ 1 ] , textures[ 2 ] )
     return triangle
 
 
@@ -57,5 +66,5 @@ def readTextureInTriangl( line ) :
     texture = [ ]
     for i in range( 2 , len( split ) ) :
         texture.append( split[ i ] )
-    triangle = tr.Triangle( texture[ 0 ] , texture[ 1 ] , texture[ 2 ] )
+    triangle = tr.Triangle(texture[ 0 ] , texture[ 1 ] , texture[ 2 ],texture[ 0 ] , texture[ 1 ] , texture[ 2 ] )
     return triangle
