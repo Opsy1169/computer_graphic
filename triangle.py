@@ -23,12 +23,15 @@ class Point:
     def norm(self) -> float:
         return math.sqrt(self.dot_product(self))
 
+
     def angle(self, another) -> float:
         """
         Calculate cos of angle with another vector
         :param another: vector to multiply
         :return: cos of angle
+
         """
+
         return self.dot_product(another) / (self.norm() * another.norm())
 
     def vector_product(self, another):
@@ -45,10 +48,8 @@ class Point:
         Need rotation method
         :return: 2D Point from graphics module
         """
-
         # todo Не стоит менять значения self, лучше просто вернуть новый измененный объект
-        # Сейчас картинка артефачит, потому что забили болт на z координату ( self.third = 1), надо понять,
-        # как ей поставить правильное значение
+
         f_u, f_v, u_0, v_0 = main.setParametersForProjection()
         M = np.array([self.first, self.second, self.third, 1])
         K = np.zeros((3, 4))
