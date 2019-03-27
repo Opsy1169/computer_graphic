@@ -70,10 +70,16 @@ class Triangle:
     Describes triangle polygon
     """
 
-    def __init__(self, first: Point, second: Point, third: Point, textureFirst=0, textureSecond=0, textureThird=0):
+    def __init__(self, first: Point, second: Point, third: Point,normalFirst:Point,normalSecond:Point,normalThird:Point ,
+                 textureFirst=0, textureSecond=0, textureThird=0):
         self.first = first
         self.second = second
         self.third = third
+
+        self.normalFirst = normalFirst
+        self.normalSecond = normalSecond
+        self.normalThird = normalThird
+
         self.textureFirst = textureFirst
         self.textureSecond = textureSecond
         self.textureThird = textureThird
