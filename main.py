@@ -19,6 +19,8 @@ def get_point(index):
     return tr.Point(-vertex_list[index, 0],-vertex_list[index, 1], -vertex_list[index, 2])
 
 
+def get_normal_point(index):
+    return tr.Point(-vectorNormal[index, 0], -vectorNormal[index, 1], -vectorNormal[index, 2])
 # завел отдельный метод, потому что чтобы унифицировать с get_point, то надо будет постоянно массив передавать,
 # а это так себе затея думаю, и так нормально. Вычитать нужно, потому что он так в каком-то перевернутом виде.
 # Установил просто эмпирически texture -- картинка с текстурой, сами значения в обж лежат в диапазоне от 0 до 1,
@@ -84,6 +86,12 @@ def setParametersForProjection():
     v_0 = 500
     return  f_u, f_v, u_0, v_0
 
+def newVectorNormal():
+    vectorNormal[:,0]=vectorNormal[:,0]*0
+    vectorNormal[:,1]=vectorNormal[:,1]*0
+    vectorNormal[:,2]=vectorNormal[:,2]*1
+    return vectorNormal
+
 if __name__ == '__main__':
     im = Image.new('RGB', (1000, 1000), color=(255, 255, 255, 0))
     texture = Image.open('african_head_diffuse.png')
@@ -98,12 +106,16 @@ if __name__ == '__main__':
 
     z_buffer.shape = (im.width, im.height)
 
-    vertex_list, edges_list_with_text, texture_coordinates = getPointDraw('african_head.obj')
-    vertex_list = rotate_object(vertex_list, (45,45, 45), cam_position)
+    vertex_list, edges_list_with_text, texture_coordinates,vectorNormal = getPointDraw('african_head.obj')
+    vertex_list = rotate_object(vertex_list, (0,0, 0), cam_position)
+    vectorNormal = newVectorNormal()
 
     trianglesWithCoords = [tr.Triangle(get_point(int(triangle.first) - 1),
                                        get_point(int(triangle.second) - 1),
                                        get_point(int(triangle.third) - 1),
+                                       get_normal_point(int(triangle.normalFirst) - 1),
+                                       get_normal_point(int(triangle.normalSecond) - 1),
+                                       get_normal_point(int(triangle.normalThird) - 1),
                                        get_texture_point(int(triangle.textureFirst) - 1),
                                        get_texture_point(int(triangle.textureSecond) - 1),
                                        get_texture_point(int(triangle.textureThird) - 1)) for triangle in
