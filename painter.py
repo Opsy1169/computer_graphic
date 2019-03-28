@@ -1,7 +1,6 @@
 import graphics as gr
 import numpy as np
 from PIL import Image , ImageDraw
-
 import triangle as tr
 
 
@@ -92,8 +91,7 @@ def draw_pixel( point: tr.Point , z_buffer , draw: ImageDraw ,get_pixel,intensit
     if point.third < z_buffer[ point.first , point.second ] :
         draw.point( [ point.first , point.second ] , fill=color )
         z_buffer[ point.first , point.second ] = point.third
-        pixels[get_pixel[0], get_pixel[1]] = (int(255 * intensity ), int(255 * intensity ),
-                                              int(255 * intensity ))
+
 
 
 def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffer ):
@@ -124,15 +122,7 @@ def paint_polygon(polygon: tr.Triangle, draw: ImageDraw, texture: Image, z_buffe
                     (polygon.normalSecond.first +polygon.normalSecond.second + polygon.normalSecond.third) *barycentric[1]+\
                     (polygon.normalThird.first +polygon.normalThird.second + polygon.normalThird.third) *barycentric[2]
 
-                if (intensity > .85) :intensity = 1
-                elif (intensity > .60): intensity = .80;
-                elif (intensity > .45) :intensity = .60;
-                elif (intensity > .30) :intensity = .45;
-                elif (intensity > .15) :intensity = .30;
-                else :intensity = 0
-
-
-
+                color = (int(color[0]*intensity),int(color[1]*intensity),int(color[2]*intensity))
                 draw_pixel(tr.Point(x, y, z), z_buffer, draw,get_pixel,intensity ,pixels,color)
 
 

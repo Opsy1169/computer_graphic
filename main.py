@@ -20,7 +20,7 @@ def get_point(index):
 
 
 def get_normal_point(index):
-    return tr.Point(-vectorNormal[index, 0], -vectorNormal[index, 1], -vectorNormal[index, 2])
+    return tr.Point(vectorNormal[index, 0], vectorNormal[index, 1], vectorNormal[index, 2])
 # завел отдельный метод, потому что чтобы унифицировать с get_point, то надо будет постоянно массив передавать,
 # а это так себе затея думаю, и так нормально. Вычитать нужно, потому что он так в каком-то перевернутом виде.
 # Установил просто эмпирически texture -- картинка с текстурой, сами значения в обж лежат в диапазоне от 0 до 1,
@@ -93,7 +93,7 @@ def newVectorNormal():
     return vectorNormal
 
 if __name__ == '__main__':
-    im = Image.new('RGB', (1000, 1000), color=(255, 255, 255, 0))
+    im = Image.new('RGB', (1000, 1000), color=(0, 0, 0, 0))
     texture = Image.open('african_head_diffuse.png')
     texture = texture.convert('RGB')
     width, height = texture.size
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     z_buffer.shape = (im.width, im.height)
 
     vertex_list, edges_list_with_text, texture_coordinates,vectorNormal = getPointDraw('african_head.obj')
-    vertex_list = rotate_object(vertex_list, (0,0, 0), cam_position)
+    vertex_list = rotate_object(vertex_list, (0,20, 0), cam_position)
     vectorNormal = newVectorNormal()
 
     trianglesWithCoords = [tr.Triangle(get_point(int(triangle.first) - 1),
