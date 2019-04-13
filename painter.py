@@ -40,7 +40,7 @@ def line_brezenhem( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(2
             error -= 1
 
 
-def line_vu( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 , 0) ) :
+def line_brezenhem( start: gr.Point , end: gr.Point , draw: ImageDraw , color=(255 , 0 , 0) ) :
     """
          Draws line from start to end 2D Point via Vu algorithm ( with gradient subline )
         :param start: starting line 2D point
